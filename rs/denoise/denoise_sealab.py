@@ -8,7 +8,6 @@ from scipy.interpolate import CubicSpline
 import subprocess
 import statsmodels.api as sm
 
-
 """
 # Denoise functions being used in SEA Lab -- for rs fMRI data
 # 1. Resample to 32K; 
@@ -329,7 +328,7 @@ def bandpass_ts(denoised_ts, filtered_out, lowpass, highpass, t_r):
     # load data and preallocate output
     func_data = nib.load(denoised_ts).get_fdata()
 
-    sampling_rate = 1/t_r
+    sampling_rate = 1 / t_r
     n_timepoints = func_data.shape[1]
     F = np.zeros((n_timepoints))
 
@@ -342,7 +341,7 @@ def bandpass_ts(denoised_ts, filtered_out, lowpass, highpass, t_r):
     # make cifti header to save filtered data
     ax1 = nib.load(denoised_ts).header.get_axis(0)
     ax2 = nib.load(denoised_ts).header.get_axis(1)
-    header = (ax1,ax2)
+    header = (ax1, ax2)
     # make and save image
     filt_image = nib.cifti2.cifti2.Cifti2Image(filt_data, header)
     filt_image.to_filename(filtered_out)
@@ -378,4 +377,72 @@ def drop_high_motion_vols(filtered_ts, dropped_out, outlier_vols):
     # make and save image
     red_image = nib.cifti2.cifti2.Cifti2Image(reduced_data, header)
     red_image.to_filename(dropped_out)
+    return
+
+
+def concatenate_dtseries(dtseries_list, out_filename):
+    """
+    Concatenate dteries datas into a data
+    Input Parameters
+    ----------
+    dtseries_list: a list of full path to denoised time series data that needs to be concatenated
+                   list of string
+    out_filename: output full path to concatenated data that is already concatenated
+                  string
+    Returns
+    ----------
+    None
+    """
+    data_to_merge = []
+    for file in dtseries_list:
+        temp = nib.load(file).get_fdata()
+        data_to_merge.append(temp)
+
+    merged_data = np.concatenate(data_to_merge, axis=0)
+    ax0 = nib.load(dtseries_list[0]).header.get_axis(0)
+    ax1 = nib.load(dtseries_list[0]).header.get_axis(1)
+    ax0.size = merged_data.shape[0]
+
+    # save merged file
+    img = nib.cifti2.cifti2.Cifti2Image(merged_data, (ax0, ax1))
+    img.to_filename(out_filename)
+    return
+
+
+def apply_parcels(denoised_ts, output_path, atlas_dlabel='Gordon333_SeitzmanSubcortical.32k_fs_LR.dlabel.nii'):
+    """
+    Parcelate based on atlas_dlabel -- a wrapper of wb_command
+    Input Parameters
+    ----------
+    denoised_ts: full path to concatenated or denoised time series (results of concatenate_dtseries)
+                 string
+    output_path: full path to the parcelated data
+                 string
+    atlas_dlabel: full path to dlabel data
+                  string
+    Returns
+    ----------
+    None
+    """
+
+    # apply parcels to the timeseries
+    subprocess.call(f'wb_command -cifti-parcellate {denoised_ts} {atlas_dlabel} COLUMN {output_path} -only-numeric',
+                    shell=True)
+    return
+
+
+def fc_estimate(parcelled_file, output_fc_path):
+    """
+    FC (correlation) estimate -- a wrapper of wb_command
+    Input Parameters
+    ----------
+    parcelled_file: full path to parcelled data (results of apply_parcels)
+                    string
+    output_fc_path: full path to the FC data (.pconn)
+                    string
+    Returns
+    ----------
+    None
+    """
+    subprocess.call(f'wb_command -cifti-correlation {parcelled_file} {output_fc_path}', shell=True)
     return
