@@ -16,7 +16,7 @@ This repository hosts the public sharing of data and analysis scripts for our re
 - **`ad_all.csv`**: Details Axial Diffusivity (AD) computed from the standard DTI model, across fiber tracts segmented by TractSeg.
 - **`rd_all.csv`**: Enumerates Radial Diffusivity (RD) values, computed from the standard DTI model, across fiber tracts segmented by TractSeg.
 
-### `brain_changes/`: Brain Change Analysis Scripts (as report in `1. Brain Changes during Pregnancy).
+### `brain_changes/`: Brain Change Analysis Scripts (as report in `1. Brain Changes during Pregnancy`).
 
 - **`1_t1_changes.R`**: R scripts analyzing volumetric changes, including brain morphometry and changes in cortical regions (as report in `1.1. Brain Morphometry Changes.` and `1.2. Changes in Cortical Regions.`).
 - **`2_csfmap_changes.R`**: R scripts examining changes in CSF volume (as report in `1.3. CSF Changes.`).
