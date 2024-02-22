@@ -10,13 +10,12 @@ library(r2glmm)
 library(rstatix)
 
 
-
 ########################## 1) t1 ~ ges_time ##########################
-dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/structure_changes/data/t1_all.csv")
-# exclude non-pregnant participants 10014, 10016, and 10018
+dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/data/t1_all.csv")
 # exclude 10004_scan1 as 10004_scan1 was collected by t1/t2 not QUALAS
-dat_total_subset <- dat_total[!(dat_total$sub_id=="10014" | dat_total$sub_id=="10016" 
-                                | dat_total$sub_id=="10018" | dat_total$scan_id=="10004_scan1"),]
+dat_total_subset <- dat_total[!(dat_total$scan_id=="10004_scan1"),]
+# dat_total_subset <- dat_total[!(dat_total$sub_id=="10014" | dat_total$sub_id=="10016" 
+#                                 | dat_total$sub_id=="10018" | dat_total$scan_id=="10004_scan1"),]
 dat_total_subset$sub_id <- as.factor(dat_total_subset$sub_id)
 
 dat_total_subset$ges_time_z <- scale(dat_total_subset$ges_time, center = T, scale = T)
@@ -41,13 +40,12 @@ df_result_ges <- data.frame(ROI1=character(),
                             b=double(),
                             beta=double(),
                             beta_lower=double(),
-                            beta_upper=double(), 
-                            prec_change=double(), 
-                            prec_change_rate=double(), stringsAsFactors=FALSE)
+                            beta_upper=double(), stringsAsFactors=FALSE)
 for (i in y_interest) {
   f <- formula(paste(i, " ~ ges_time + eTIV_x + age"))
   fit_tmp <- lme(f, random = ~ 1 | sub_id, 
-                 data=dat_total_subset, na.action=na.omit)
+                 data=dat_total_subset, 
+                 na.action=na.omit)
   print(summary(fit_tmp))
   sum_tmp <- summary(fit_tmp)
   tmp_p <- sum_tmp$tTable["ges_time", "p-value"]
@@ -65,8 +63,7 @@ for (i in y_interest) {
   
   # append
   df_result_ges[nrow(df_result_ges) + 1,] = c(i, unname(tmp_p), b_tmp, 
-                                              unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp),
-                                              perc_c, perc_c_rate)
+                                              unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
 }
 
 write.csv(df_result_ges, "df_result_ges_t1.csv", 
@@ -75,8 +72,7 @@ write.csv(df_result_ges, "df_result_ges_t1.csv",
 
 ########################## 2) leave one out ##########################
 dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/structure_changes/data/t1_all.csv")
-dat_total_subset <- dat_total[!(dat_total$sub_id=="10014" | dat_total$sub_id=="10016" 
-                                | dat_total$sub_id=="10018" | dat_total$scan_id=="10004_scan1"),]
+dat_total_subset <- dat_total[!(dat_total$scan_id=="10004_scan1"),]
 dat_total_subset$sub_id <- as.factor(dat_total_subset$sub_id)
 dat_total_subset$pial_sum <- rowSums(subset(dat_total_subset, 
                                             select = c(lh_pial, rh_pial)), 
@@ -157,10 +153,9 @@ for (subject in unique_subjects) {
 
 ########################## 3) aseg volumes ##########################
 library(tidyr)
-dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/structure_changes/data/t1_all.csv")
+dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/data/t1_all.csv")
 
-dat_total_subset <- dat_total[!(dat_total$sub_id=="10014" | dat_total$sub_id=="10016" 
-                                | dat_total$sub_id=="10018" | dat_total$scan_id=="10004_scan1"
+dat_total_subset <- dat_total[!(dat_total$scan_id=="10004_scan1"
                                 | dat_total$scan_id=="10003_scan3"),]
 dat_total_subset$sub_id <- as.factor(dat_total_subset$sub_id)
 
@@ -219,4 +214,6 @@ for (i in 1:length(list_subregions_long)) {
                                               unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
 }
 
-write.csv(df_result_ges, "/Users/yanbinniu/Projects/NCAP/scripts/analysis_t1/results/df_result_ges_t1_aseg_stdCov.csv", row.names=F)
+write.csv(df_result_ges, 
+          "df_result_ges_t1_aseg.csv", 
+          row.names=F)
