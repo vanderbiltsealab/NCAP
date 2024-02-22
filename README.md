@@ -1,7 +1,7 @@
 # Neurobiological Changes Across Pregnancy: A Prospective Longitudinal Investigation
 
 ## Overview
-This repository is open for public sharing of data and analysis scripts related to our study on neurobiological changes throughout pregnancy.
+This repository facilitates the public sharing of data and analysis scripts for our research project titled "Neurobiological Changes Across Pregnancy: A Prospective Longitudinal Investigation." Our study focuses on documenting neurobiological changes, with a comprehensive analysis of both structural and biological alterations, as well as their associations, throughout this significant life event. The repository includes processed data and analysis scripts, all aimed at supporting open science, improving replicability, and facilitating knowledge dissemination.
 
 ## Directory Structure
 
