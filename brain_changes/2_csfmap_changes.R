@@ -62,12 +62,9 @@ for (i in names(dat_total_subset)[3:10]) {
 }
 
 
-write.csv(df_result_ges, "csfmap_results.csv", 
-          row.names = FALSE)
-
-
 ########################## 2) leave one out ##########################
 dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/data/csfmap.csv")
+
 # remove 10004_scan1 which did not have qalas data
 dat_total_subset <- dat_total[!(dat_total$fsid=='10004_scan1'),]
 dat_total_subset$sub_id <- as.factor(dat_total_subset$sub_id)
@@ -115,7 +112,3 @@ for (subject in unique_subjects) {
   df_result_ges[nrow(df_result_ges) + 1,] = c(subject, unname(tmp_p), b_tmp, 
                                               unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
 }
-
-write.csv(df_result_ges, 
-          "df_result_csfmap_loo.csv", 
-          row.names=F)
