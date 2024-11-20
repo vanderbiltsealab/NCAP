@@ -11,7 +11,7 @@ library(rstatix)
 
 
 ########################## 1) t1 ~ hormone ##########################
-# saliva sample needs to remove 10001_scan1
+# read in data
 dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/data/t1_all.csv")
 
 dat_total_subset_25 <- dat_total[!(dat_total$scan_id=="10001_scan1" 
