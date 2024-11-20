@@ -159,18 +159,12 @@ for (metric in file_list) {
     df_final_hormone[[new_column_name_beta]] <- df_result_ges$beta
     new_column_name_p <- paste0(current_metric, "_", horm, "_p")
     df_final_hormone[[new_column_name_p]] <- df_result_ges$p
-    
-    write.csv(df_result_ges, 
-              file = paste0("df_result_ges_noddi_matlab_", current_metric,"_", horm, ".csv"), 
-              row.names = FALSE)
   }
 }
 
-write.csv(df_final_hormone, "all_noddi_matlab_beta_hormone_ctrl_motion.csv", row.names=FALSE)
-
 
 ################## matlab noddi and hair hormones ##################
-# does not converge if including segment in random slope
+# read in data
 file_list <- c("matlab_icvf_all.csv")
 hormone_list <- c('cortisol_win_centered', 'cortisone_win_centered')
 
@@ -318,12 +312,5 @@ for (metric in file_list) {
     df_final_hormone[[new_column_name_beta]] <- df_result_ges$beta
     new_column_name_p <- paste0(current_metric, "_", horm, "_p")
     df_final_hormone[[new_column_name_p]] <- df_result_ges$p
-
-    write.csv(df_result_ges,
-              file = paste0("df_result_ges_noddi_matlab_hormone_hair", current_metric,"_", horm, ".csv"),
-              row.names = FALSE)
   }
 }
-
-write.csv(df_final_hormone, "all_noddi_matlab_beta_hormone_hair_ctrl_motion.csv", row.names=FALSE)
-
