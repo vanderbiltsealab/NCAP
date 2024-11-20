@@ -12,10 +12,10 @@ library(rstatix)
 
 ########################## 1) t1 ~ ges_time ##########################
 dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/data/t1_all.csv")
-# exclude 10004_scan1 as 10004_scan1 was collected by t1/t2 not QUALAS
+
+# exclude 10004_scan1 as 10004_scan1 was collected by t1/t2 not QALAS
 dat_total_subset <- dat_total[!(dat_total$scan_id=="10004_scan1"),]
-# dat_total_subset <- dat_total[!(dat_total$sub_id=="10014" | dat_total$sub_id=="10016" 
-#                                 | dat_total$sub_id=="10018" | dat_total$scan_id=="10004_scan1"),]
+
 dat_total_subset$sub_id <- as.factor(dat_total_subset$sub_id)
 
 dat_total_subset$ges_time_z <- scale(dat_total_subset$ges_time, center = T, scale = T)
@@ -65,9 +65,6 @@ for (i in y_interest) {
   df_result_ges[nrow(df_result_ges) + 1,] = c(i, unname(tmp_p), b_tmp, 
                                               unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
 }
-
-write.csv(df_result_ges, "df_result_ges_t1.csv", 
-          row.names=F)
 
 
 ########################## 2) leave one out ##########################
@@ -143,11 +140,6 @@ for (subject in unique_subjects) {
                                                 unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp),
                                                 perc_c, perc_c_rate)
   }
-  
-  filename <- paste0("df_result_ges_t1_loo_rm_", subject, ".csv")
-  write.csv(df_result_ges, 
-            filename, 
-            row.names=F)
 }
 
 
@@ -196,7 +188,10 @@ for (i in 1:length(list_subregions_long)) {
   data_dv <- names(data)[ncol(data)]
   print(data_dv)
   fit_func <- formula(paste(data_dv, "~ hemi + eTIV_x + age + ges_time"))
-  fit_tmp <- lme(fit_func, random = ~ 1 | sub_id, data=data, na.action=na.omit)
+  fit_tmp <- lme(fit_func, 
+                 random = ~ 1 | sub_id/scan, 
+                 data=data, 
+                 na.action=na.omit)
   print(summary(fit_tmp))
   sum_tmp <- summary(fit_tmp)
   tmp_p <- sum_tmp$tTable["ges_time", "p-value"]
@@ -213,7 +208,3 @@ for (i in 1:length(list_subregions_long)) {
   df_result_ges[nrow(df_result_ges) + 1,] = c(data_dv, unname(tmp_p), b_tmp,
                                               unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
 }
-
-write.csv(df_result_ges, 
-          "df_result_ges_t1_aseg.csv", 
-          row.names=F)
