@@ -139,12 +139,4 @@ for (metric in file_list) {
   df_final[[new_column_name_beta]] <- df_result_ges$beta
   new_column_name_p <- paste0(current_metric, "_p")
   df_final[[new_column_name_p]] <- df_result_ges$p
-  
-  write.csv(df_result_ges, 
-            file = paste0("df_result_ges_noddi_matlab_", current_metric, ".csv"), 
-            row.names = FALSE)
 }
-
-write.csv(df_final, "all_dti_beta_ctrl_motion.csv", row.names=FALSE)
-
-
