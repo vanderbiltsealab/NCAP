@@ -13,6 +13,7 @@ library(rstatix)
 ########################## 1) t1 ~ hormone ##########################
 # saliva sample needs to remove 10001_scan1
 dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/data/t1_all.csv")
+
 dat_total_subset_25 <- dat_total[!(dat_total$scan_id=="10001_scan1" 
                                    | dat_total$scan_id=="10004_scan1"),]
 dat_total_subset_25$sub_id <- as.factor(dat_total_subset_25$sub_id)
@@ -50,7 +51,8 @@ for (i in hormone_interest) {
     f <- formula(paste(j, " ~ eTIV_x + age +", i))
     
     fit_tmp <- lme(f, random = ~ 1 | sub_id, 
-                   data=dat_total_subset_25, na.action=na.omit)
+                   data=dat_total_subset_25, 
+                   na.action=na.omit)
     print(summary(fit_tmp))
     sum_tmp <- summary(fit_tmp)
     tmp_p <- sum_tmp$tTable[i, "p-value"]
@@ -73,13 +75,10 @@ for (i in hormone_interest) {
 
   }
 }
-write.csv(df_result_ges, "df_result_ges_t1_and_hormone.csv", 
-          row.names=F)
 
 
 ########################## 2) t1 ~ hair hormone ##########################
-# hair sample does not need to remove 10001_scan1
-# hair sample does not converge if including segment as a random slope
+# read in data
 dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/data/t1_all.csv")
 dat_total_subset_25 <- dat_total[!(dat_total$scan_id=="10004_scan1"),]
 dat_total_subset_25$sub_id <- as.factor(dat_total_subset_25$sub_id)
@@ -150,7 +149,3 @@ for (i in hormone_interest) {
 
   }
 }
-
-write.csv(df_result_ges, "df_result_ges_t1_and_hormone_hair.csv",
-          row.names=F)
-
