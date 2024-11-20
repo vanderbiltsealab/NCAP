@@ -56,9 +56,6 @@ for (i in hormone_interest) {
                                               unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
 }
 
-write.csv(df_result_ges, "df_result_ges_hormone.csv", 
-          row.names=F)
-
 
 ########################## 2) hair hormone ~ ges_time ##########################
 dat_total_subset_hor <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/data/t1_all.csv")
@@ -106,9 +103,6 @@ for (i in hormone_interest) {
   df_result_ges[nrow(df_result_ges) + 1,] = c(i, unname(tmp_p), b_tmp, 
                                               unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
 }
-
-write.csv(df_result_ges, "df_result_ges_hormone_hair.csv", 
-          row.names=F)
 
 
 ########################## 3) immune ~ ges_time ##########################
@@ -161,8 +155,3 @@ for (i in y_interest) {
   df_result_ges[nrow(df_result_ges) + 1,] = c(i, unname(tmp_p), b_tmp, 
                                               unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
 }
-
-write.csv(df_result_ges, "immune_change.csv", 
-          row.names = FALSE)
-
-
