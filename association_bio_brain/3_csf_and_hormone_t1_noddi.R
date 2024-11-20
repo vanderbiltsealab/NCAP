@@ -14,6 +14,7 @@ library(rstatix)
 
 ############## 1) csf and hormone ##############
 dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/data/csfmap.csv")
+
 # exclude 10001_scan1 and 10004_scan1
 dat_total_subset <- dat_total[!(dat_total$fsid=='10004_scan1'
                                 | dat_total$fsid=='10001_scan1'),]
@@ -62,16 +63,12 @@ for (j in hormone_interest) {
     df_result_ges[nrow(df_result_ges) + 1,] = c(i, unname(tmp_p), b_tmp, tmp_interc,
                                                 unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
   }
-  
-  
-  write.csv(df_result_ges, 
-            file = paste0("df_result_csf_", j, ".csv"), 
-            row.names = FALSE)
 }
 
 
 ################## 2) csf and t1 ##################
 dat_total <- read.csv("/Users/yanbinniu/Projects/NCAP/scripts/github/NCAP/data/csfmap.csv")
+
 # exclude 10004_scan1
 dat_total_subset <- dat_total[!(dat_total$fsid=='10004_scan1'),]
 dat_total_subset$sub_id <- as.factor(dat_total_subset$sub_id)
@@ -123,9 +120,6 @@ for (i in v2_interest) {
                                                 unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
   }
 }
-
-write.csv(df_result_ges, "csf_t1_ControlTICV_AGE.csv", 
-          row.names = FALSE)
 
 
 ################## 3) csf and diffusion ##################
@@ -247,10 +241,5 @@ for (metric in file_list) {
     df_result_ges[nrow(df_result_ges) + 1,] = c(i, unname(tmp_p), b_tmp, 
                                                 unname(beta_tmp), unname(beta_lower_tmp), unname(beta_upper_tmp))
   }
-  
-  # rank p value
-  write.csv(df_result_ges, 
-            file = paste0("df_csfmap80_", metric_name, ".csv"), 
-            row.names = FALSE)
 }
 
